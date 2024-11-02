@@ -1,0 +1,36 @@
+body {
+    background-color: #f7f8fc;
+    font-family: Arial, sans-serif;
+}
+
+header h1 {
+    text-align: center;
+    color: #0c1f63;
+}
+
+.login-container, .register-container, .dashboard-container {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.login-container h2, .register-container h2, .dashboard-container h2 {
+    color: #0c1f63;
+}
+
+form p {
+    font-size: 0.9em;
+}
+
+button, input[type="submit"] {
+    background-color: #0c1f63;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+}

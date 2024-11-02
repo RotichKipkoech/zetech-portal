@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Finance Dashboard</h1>
+
+<!-- Form to post/update fee balance -->
+<h3>Update Fee Balance</h3>
+<form method="POST">
+    <label for="student_id">Select Student:</label>
+    <select name="student_id">
+        {% for student in students %}
+            <option value="{{ student.id }}">{{ student.username }}</option>
+        {% endfor %}
+    </select>
+    
+    <label for="balance">Balance:</label>
+    <input type="number" name="balance" step="0.01" required>
+    
+    <button type="submit">Update Balance</button>
+</form>
+
+<!-- Display all student balances -->
+<h3>Student Fee Balances</h3>
+<ul>
+    {% for balance in balances %}
+        <li><strong>Student ID {{ balance.student_id }}:</strong> ${{ balance.balance }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
