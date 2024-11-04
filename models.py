@@ -41,21 +41,24 @@ class Finance(db.Model):
     __tablename__ = 'finances'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    staff_number = db.Column(db.String(50), unique=True, nullable=False)  # Add staff_number field
 
     students = db.relationship('Student', back_populates='finance')
 
-    def __init__(self, name):
+    def __init__(self, name, staff_number):
         self.name = name
+        self.staff_number = staff_number  # Initialize staff_number in the constructor
+
 
 class Unit(db.Model):
     __tablename__ = 'units'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-
+    unit_name = db.Column(db.String(100), nullable=False)  # Ensure this field exists
     students = db.relationship('Student', secondary=student_units, back_populates='units')
 
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, unit_name):  # Initialize with unit_name
+        self.unit_name = unit_name
+
 
 class StudentFee(db.Model):
     __tablename__ = 'student_fees'
