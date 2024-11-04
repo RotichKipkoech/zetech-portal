@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Add Unit</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", placeholder="Unit Name") }}
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Add Unit</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

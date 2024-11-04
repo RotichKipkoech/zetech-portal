@@ -1,11 +1,15 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
-<h1>Admin Dashboard</h1>
-<form method="POST">
-    {{ form.hidden_tag() }}
-    {{ form.username.label }} {{ form.username }}
-    {{ form.password.label }} {{ form.password }}
-    {{ form.role.label }} {{ form.role }}
-    {{ form.submit }}
-</form>
+<div class="container mt-5">
+    <h2>Admin Dashboard</h2>
+    <a href="{{ url_for('add_student') }}" class="btn btn-primary">Add Student</a>
+    <a href="{{ url_for('add_finance_user') }}" class="btn btn-primary">Add Finance User</a>
+    <a href="{{ url_for('add_unit') }}" class="btn btn-primary">Add Unit</a>
+    <h3 class="mt-4">All Students</h3>
+    <ul>
+        {% for student in students %}
+            <li>{{ student.name }} - Admission No: {{ student.admission_number }}</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Create Finance User</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", placeholder="Finance User Name") }}
+        </div>
+        <div class="mb-3">
+            {{ form.staff_number.label(class="form-label") }}
+            {{ form.staff_number(class="form-control", placeholder="Staff Number") }}
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Create Finance User</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

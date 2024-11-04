@@ -1,14 +1,37 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
-<div class="login-container">
-    <form method="POST" action="{{ url_for('login') }}">
-        {{ form.hidden_tag() }}
-        <h2>Hi, welcome back</h2>
-        <p>Please fill in your details to log in</p>
-        {{ form.username.label }} {{ form.username() }}
-        {{ form.password.label }} {{ form.password() }}
-        {{ form.remember() }} Remember me
-        {{ form.submit() }}
-    </form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h2 class="text-center">Login</h2>
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.username.label(class="form-label") }}
+                            {{ form.username(class="form-control", placeholder="Enter your username") }}
+                            {% for error in form.username.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control", placeholder="Enter your password") }}
+                            {% for error in form.password.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p>Don't have an account? Contact Admin at kennrottich@gmail.com</p>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

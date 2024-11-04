@@ -1,36 +1,51 @@
 body {
-    background-color: #f7f8fc;
     font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
 }
 
-header h1 {
-    text-align: center;
-    color: #0c1f63;
+nav {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
 }
 
-.login-container, .register-container, .dashboard-container {
-    max-width: 400px;
-    margin: auto;
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.container {
     padding: 20px;
-    background: #ffffff;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
 }
 
-.login-container h2, .register-container h2, .dashboard-container h2 {
-    color: #0c1f63;
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
 }
 
-form p {
-    font-size: 0.9em;
+.alert-success {
+    background-color: #dff0d8;
+    color: #3c763d;
 }
 
-button, input[type="submit"] {
-    background-color: #0c1f63;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    width: 100%;
+.alert-danger {
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+.alert-info {
+    background-color: #d9edf7;
+    color: #31708f;
 }
