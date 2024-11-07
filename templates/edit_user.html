@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit User: {{ user.name }}</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ user.name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="role">Role</label>
+            <select class="form-control" id="role" name="role">
+                <option value="Student" {% if user.role == 'Student' %}selected{% endif %}>Student</option>
+                <option value="Finance" {% if user.role == 'Finance' %}selected{% endif %}>Finance</option>
+                <option value="Teacher" {% if user.role == 'Teacher' %}selected{% endif %}>Teacher</option>
+            </select>
+        </div>
+
+        {% if user.role == 'Student' %}
+        <div class="form-group">
+            <label for="admission_number">Admission Number</label>
+            <input type="text" class="form-control" id="admission_number" name="admission_number" value="{{ user.admission_number }}">
+        </div>
+        <div class="form-group">
+            <label for="class_assigned">Class Assigned</label>
+            <input type="text" class="form-control" id="class_assigned" name="class_assigned" value="{{ user.class_assigned }}">
+        </div>
+        {% elif user.role == 'Finance' %}
+        <div class="form-group">
+            <label for="department">Department</label>
+            <input type="text" class="form-control" id="department" name="department" value="{{ user.department }}">
+        </div>
+        {% elif user.role == 'Teacher' %}
+        <div class="form-group">
+            <label for="subject">Subject</label>
+            <input type="text" class="form-control" id="subject" name="subject" value="{{ user.subject }}">
+        </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

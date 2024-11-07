@@ -4,14 +4,27 @@
     <h2>Create Student</h2>
     <form method="POST">
         {{ form.hidden_tag() }}
+        
         <div class="mb-3">
             {{ form.name.label(class="form-label") }}
             {{ form.name(class="form-control", placeholder="Student Name") }}
         </div>
+        
         <div class="mb-3">
             {{ form.admission_number.label(class="form-label") }}
             {{ form.admission_number(class="form-control", placeholder="Admission Number") }}
         </div>
+        
+        <div class="mb-3">
+            {{ form.username.label(class="form-label") }}
+            {{ form.username(class="form-control", placeholder="Username") }}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control", placeholder="Password", type="password") }}
+        </div>
+        
         <div class="d-grid">
             <button type="submit" class="btn btn-primary">Create Student</button>
         </div>

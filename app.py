@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import LoginForm, CreateStudentForm, CreateFinanceForm, AddFeeForm, PostUnitForm
+from forms import LoginForm, CreateStudentForm, CreateFinanceForm, AddFeeForm, PostUnitForm, EditUserForm
 from models import db, User, Student, Finance, Unit
 
 app = Flask(__name__)
@@ -108,15 +108,26 @@ def add_student():
     if current_user.role != 'Admin':
         flash('Unauthorized access!', 'danger')
         return redirect(url_for('login'))
+    
     form = CreateStudentForm()
     if form.validate_on_submit():
-        name = form.name.data
+        username = form.username.data
+        password = form.password.data
         admission_number = form.admission_number.data
-        student = Student(name=name, admission_number=admission_number)
+
+        # Create User for Student
+        user = User(username=username, role='Student', password=generate_password_hash(password))
+        db.session.add(user)
+        db.session.commit()
+
+        # Create Student using the newly created user_id
+        student = Student(user_id=user.id, admission_number=admission_number)
         db.session.add(student)
         db.session.commit()
+        
         flash("Student created successfully.")
         return redirect(url_for("admin_dashboard"))
+    
     return render_template("create_student.html", form=form)
 
 @app.route('/admin/add_finance_user', methods=['GET', 'POST'])
@@ -125,16 +136,34 @@ def add_finance_user():
     if current_user.role != 'Admin':
         flash('Unauthorized access!', 'danger')
         return redirect(url_for('login'))
+    
     form = CreateFinanceForm()
     if form.validate_on_submit():
-        name = form.name.data
+        username = form.username.data
+        password = form.password.data
         staff_number = form.staff_number.data
-        finance_user = Finance(name=name, staff_number=staff_number)
+
+        # Check if staff_number already exists
+        existing_finance_user = Finance.query.filter_by(staff_number=staff_number).first()
+        if existing_finance_user:
+            flash("This staff number is already in use. Please choose a different one.", 'danger')
+            return redirect(url_for('add_finance_user'))
+
+        # Create User for Finance staff
+        user = User(username=username, role='Finance', password=generate_password_hash(password))
+        db.session.add(user)
+        db.session.commit()
+
+        # Create Finance using the newly created user_id
+        finance_user = Finance(user_id=user.id, staff_number=staff_number)
         db.session.add(finance_user)
         db.session.commit()
+
         flash("Finance user created successfully.")
         return redirect(url_for("admin_dashboard"))
+    
     return render_template("create_finance_user.html", form=form)
+
 
 @app.route('/admin/add_unit', methods=['GET', 'POST'])
 @login_required
@@ -142,6 +171,7 @@ def add_unit():
     if current_user.role != 'Admin':
         flash('Unauthorized access!', 'danger')
         return redirect(url_for('login'))
+    
     form = PostUnitForm()
     if form.validate_on_submit():
         unit_name = form.name.data
@@ -150,7 +180,46 @@ def add_unit():
         db.session.commit()
         flash("Unit added successfully.")
         return redirect(url_for("admin_dashboard"))
+    
     return render_template("create_unit.html", form=form)
+
+
+@app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)  # Get user by ID
+    if request.method == 'POST':
+        # Update user details based on the form data
+        user.name = request.form.get('name')
+        user.role = request.form.get('role')
+        
+        # Depending on the role, update role-specific information
+        if user.role == 'Student':
+            user.admission_number = request.form.get('admission_number')
+            user.class_assigned = request.form.get('class_assigned')
+        elif user.role == 'Finance':
+            user.department = request.form.get('department')
+        elif user.role == 'Teacher':
+            user.subject = request.form.get('subject')
+        
+        db.session.commit()  # Commit changes to the database
+        return redirect(url_for('admin_dashboard'))  # Redirect back to the admin dashboard
+
+    return render_template('edit_user.html', user=user)
+
+
+@app.route('/delete_user/<int:user_id>', methods=['GET', 'POST'])
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)  # Get user by ID
+
+    if request.method == 'POST':
+        # Delete user from the database
+        db.session.delete(user)
+        db.session.commit()  # Commit changes to remove the user
+
+        return redirect(url_for('admin_dashboard'))  # Redirect back to the admin dashboard
+
+    return render_template('delete_user.html', user=user)
+
 
 # General dashboard route for other users
 @app.route('/dashboard')

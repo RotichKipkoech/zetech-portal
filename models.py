@@ -10,58 +10,63 @@ student_units = db.Table('student_units',
 )
 
 class User(db.Model, UserMixin):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
+    
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     role = db.Column(db.String(20), nullable=False)
-    password = db.Column(db.String(128))  # Changed to 'password'
+    password = db.Column(db.String(128), nullable=False)
 
     def __init__(self, username, role, password):
         self.username = username
         self.role = role
-        self.password = password  # Changed to 'password'
+        self.password = password
 
 class Student(db.Model):
     __tablename__ = 'students'
+    
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     admission_number = db.Column(db.String(20), unique=True, nullable=False)
     finance_id = db.Column(db.Integer, db.ForeignKey('finances.id'), nullable=True)
 
+    user = db.relationship('User', backref='student', lazy=True)
     finance = db.relationship('Finance', back_populates='students')
     units = db.relationship('Unit', secondary=student_units, back_populates='students')
     fees = db.relationship('StudentFee', back_populates='student')
 
-    def __init__(self, name, admission_number, finance_id=None):
-        self.name = name
+    def __init__(self, user_id, admission_number, finance_id=None):
+        self.user_id = user_id
         self.admission_number = admission_number
         self.finance_id = finance_id
 
 class Finance(db.Model):
     __tablename__ = 'finances'
+    
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    staff_number = db.Column(db.String(50), unique=True, nullable=False)  # Add staff_number field
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    staff_number = db.Column(db.String(50), unique=True, nullable=False)
 
+    user = db.relationship('User', backref='finance', lazy=True)
     students = db.relationship('Student', back_populates='finance')
 
-    def __init__(self, name, staff_number):
-        self.name = name
-        self.staff_number = staff_number  # Initialize staff_number in the constructor
-
+    def __init__(self, user_id, staff_number):
+        self.user_id = user_id
+        self.staff_number = staff_number
 
 class Unit(db.Model):
     __tablename__ = 'units'
+    
     id = db.Column(db.Integer, primary_key=True)
-    unit_name = db.Column(db.String(100), nullable=False)  # Ensure this field exists
+    unit_name = db.Column(db.String(100), nullable=False)
     students = db.relationship('Student', secondary=student_units, back_populates='units')
 
-    def __init__(self, unit_name):  # Initialize with unit_name
+    def __init__(self, unit_name):
         self.unit_name = unit_name
-
 
 class StudentFee(db.Model):
     __tablename__ = 'student_fees'
+    
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
     amount_due = db.Column(db.Float, nullable=False)
