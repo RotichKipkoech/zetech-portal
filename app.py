@@ -263,15 +263,25 @@ def delete_user(user_id):
         flash('Unauthorized access!', 'danger')
         return redirect(url_for('login'))
     
-    user = User.query.get_or_404(user_id)  # Fetch the user by ID or show a 404 if not found
-    
+    user = User.query.get_or_404(user_id)
+
     try:
-        db.session.delete(user)  # Remove the user from the database
-        db.session.commit()  # Commit the transaction
+        # Check and delete associated student record, if it exists
+        student = Student.query.filter_by(user_id=user_id).first()
+        if student:
+            db.session.delete(student)
+        
+        # Check and delete associated finance record, if it exists
+        finance = Finance.query.filter_by(user_id=user_id).first()
+        if finance:
+            db.session.delete(finance)
+
+        db.session.delete(user)  # Finally, delete the user after dependencies are removed
+        db.session.commit()
         flash('User deleted successfully!', 'success')
     except Exception as e:
-        db.session.rollback()  # Roll back in case of error
-        flash('Error occurred while deleting user!', 'danger')
+        db.session.rollback()
+        flash(f'Error occurred while deleting user: {str(e)}', 'danger')
     
     return redirect(url_for('admin_dashboard'))
 
