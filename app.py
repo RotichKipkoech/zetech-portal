@@ -235,41 +235,46 @@ def add_fee(student_id):
         return redirect(url_for('finance_dashboard'))
     return render_template('add_fee.html', form=form)
 
-@app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
+@app.route('/admin/edit_user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
 def edit_user(user_id):
-    user = User.query.get_or_404(user_id)  # Get user by ID
-    if request.method == 'POST':
-        # Update user details based on the form data
-        user.name = request.form.get('name')
-        user.role = request.form.get('role')
-        
-        # Depending on the role, update role-specific information
-        if user.role == 'Student':
-            user.admission_number = request.form.get('admission_number')
-            user.class_assigned = request.form.get('class_assigned')
-        elif user.role == 'Finance':
-            user.department = request.form.get('department')
-        elif user.role == 'Teacher':
-            user.subject = request.form.get('subject')
-        
-        db.session.commit()  # Commit changes to the database
-        return redirect(url_for('admin_dashboard'))  # Redirect back to the admin dashboard
+    if current_user.role != 'Admin':
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('login'))
+    
+    user = User.query.get_or_404(user_id)
+    form = EditUserForm(obj=user)  # Assuming you have an EditUserForm set up for editing user details
 
-    return render_template('edit_user.html', user=user)
+    if form.validate_on_submit():
+        # Update user details from the form data
+        user.username = form.username.data
+        user.role = form.role.data  # Update other fields as necessary
+        db.session.commit()
+        flash('User details updated successfully!', 'success')
+        return redirect(url_for('admin_dashboard'))
+
+    return render_template('edit_user.html', form=form, user=user)
 
 
-@app.route('/delete_user/<int:user_id>', methods=['GET', 'POST'])
+@app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
+@login_required
 def delete_user(user_id):
-    user = User.query.get_or_404(user_id)  # Get user by ID
+    if current_user.role != 'Admin':
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('login'))
+    
+    user = User.query.get_or_404(user_id)  # Fetch the user by ID or show a 404 if not found
+    
+    try:
+        db.session.delete(user)  # Remove the user from the database
+        db.session.commit()  # Commit the transaction
+        flash('User deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()  # Roll back in case of error
+        flash('Error occurred while deleting user!', 'danger')
+    
+    return redirect(url_for('admin_dashboard'))
 
-    if request.method == 'POST':
-        # Delete user from the database
-        db.session.delete(user)
-        db.session.commit()  # Commit changes to remove the user
-
-        return redirect(url_for('admin_dashboard'))  # Redirect back to the admin dashboard
-
-    return render_template('delete_user.html', user=user)
 
 
 # General dashboard route for other users
