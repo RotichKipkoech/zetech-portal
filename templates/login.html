@@ -1,11 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-5">
+    <!-- Logo at the Top -->
+    <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="100">  <!-- Adjust the logo size as needed -->
+    </div>
+
+    <!-- Greeting and Prompt -->
+    <div class="text-center mb-4">
+        <h3><strong>Hi, welcome back</strong></h3>
+        <p>Please fill in your details to log in</p>
+    </div>
+
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-lg">
                 <div class="card-body">
-                    <h2 class="text-center">Login</h2>
                     <form method="POST">
                         {{ form.hidden_tag() }}
                         
