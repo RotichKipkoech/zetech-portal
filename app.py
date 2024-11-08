@@ -91,11 +91,28 @@ def admin_dashboard():
 @app.route('/student_dashboard')
 @login_required
 def student_dashboard():
+    # Ensure that only students can access this route
     if current_user.role != 'Student':
         flash('Unauthorized access!', 'danger')
         return redirect(url_for('login'))
-    student_units = Unit.query.all()  # Replace with student-specific units if needed
-    return render_template('student_dashboard.html', units=student_units)
+    
+    # Fetch the student record associated with the current user
+    student = Student.query.filter_by(user_id=current_user.id).first()
+
+    # If student exists, fetch their fees
+    if student:
+        # Get all fees related to the student
+        fees = StudentFee.query.filter_by(student_id=student.id).all()
+        
+        # Calculate the fee balance (amount due - amount paid)
+        fee_balance = sum(fee.amount_due - fee.amount_paid for fee in fees)
+    else:
+        # If no student record is found, set balance to 0
+        fee_balance = 0
+
+    # Render the student dashboard template with fee_balance passed as a context
+    return render_template('student_dashboard.html', fee_balance=fee_balance)
+
 
 @app.route('/finance_dashboard', methods=['GET', 'POST'])
 @login_required
