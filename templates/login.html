@@ -8,20 +8,34 @@
                     <h2 class="text-center">Login</h2>
                     <form method="POST">
                         {{ form.hidden_tag() }}
-                        <div class="mb-3">
-                            {{ form.username.label(class="form-label") }}
-                            {{ form.username(class="form-control", placeholder="Enter your username") }}
+                        
+                        <!-- Username Field with Icon -->
+                        <div class="mb-3 position-relative">
+                            <label for="username" class="form-label">Username</label>
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="fas fa-user"></i></div>
+                                {{ form.username(class="form-control", placeholder="Enter your username") }}
+                            </div>
                             {% for error in form.username.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
-                        <div class="mb-3">
-                            {{ form.password.label(class="form-label") }}
-                            {{ form.password(class="form-control", placeholder="Enter your password") }}
+
+                        <!-- Password Field with Icon -->
+                        <div class="mb-3 position-relative">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="fas fa-lock"></i></div>
+                                {{ form.password(class="form-control", placeholder="Enter your password", id="password-field") }}
+                                <div class="input-group-text">
+                                    <i class="fas fa-eye" id="toggle-password" style="cursor: pointer;"></i>
+                                </div>
+                            </div>
                             {% for error in form.password.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
+
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Login</button>
                         </div>
@@ -34,4 +48,18 @@
         </div>
     </div>
 </div>
+
+<!-- Include FontAwesome and jQuery -->
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script>
+    // Toggle Password Visibility
+    document.getElementById('toggle-password').addEventListener('click', function () {
+        var passwordField = document.getElementById('password-field');
+        var type = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = type;
+        
+        // Toggle eye icon based on visibility
+        this.classList.toggle('fa-eye-slash');
+    });
+</script>
 {% endblock %}
