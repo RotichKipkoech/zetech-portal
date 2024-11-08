@@ -3,8 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import date, datetime
 from forms import LoginForm, CreateStudentForm, CreateFinanceForm, AddFeeForm, PostUnitForm, EditUserForm
-from models import db, User, Student, Finance, Unit
+from models import db, User, Student, Finance, Unit, StudentFee
 
 app = Flask(__name__)
 
@@ -99,16 +100,26 @@ def student_dashboard():
 @app.route('/finance_dashboard', methods=['GET', 'POST'])
 @login_required
 def finance_dashboard():
-    if current_user.role != 'Finance':
-        flash('Unauthorized access!', 'danger')
-        return redirect(url_for('login'))
     form = AddFeeForm()
+    # Access student's name through the related User model
+    form.student_id.choices = [(s.id, s.user.username) for s in Student.query.join(User).all()]
+
     if form.validate_on_submit():
-        amount = form.amount.data
-        # Logic to handle fee addition (e.g., linking to a student)
-        flash("Fee added successfully.")
+        student_id = form.student_id.data
+        amount_due = form.amount.data
+        due_date = datetime.utcnow()  # Example; you may want to use a form field for this
+        
+        # Create and add the fee entry
+        fee = StudentFee(student_id=student_id, amount_due=amount_due, due_date=due_date)
+        db.session.add(fee)
+        db.session.commit()
+        flash('Fee added successfully', 'success')
+        return redirect(url_for('finance_dashboard'))
+
     finances = Finance.query.all()
     return render_template('finance_dashboard.html', form=form, finances=finances)
+
+
 
 @app.route('/admin/add_student', methods=['GET', 'POST'])
 @login_required
@@ -191,6 +202,21 @@ def add_unit():
     
     return render_template("create_unit.html", form=form)
 
+
+@app.route('/add_fee/<int:student_id>', methods=['GET', 'POST'])
+@login_required
+def add_fee(student_id):
+    form = AddFeeForm()
+    if form.validate_on_submit():
+        amount_due = form.amount.data
+        due_date = date.today()  # Or specify the due date as needed
+        # Create a new StudentFee record for the student
+        student_fee = StudentFee(student_id=student_id, amount_due=amount_due, due_date=due_date)
+        db.session.add(student_fee)
+        db.session.commit()
+        flash('Fee successfully added!', 'success')
+        return redirect(url_for('finance_dashboard'))
+    return render_template('add_fee.html', form=form)
 
 @app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
 def edit_user(user_id):

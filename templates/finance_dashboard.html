@@ -1,28 +1,78 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center">
-        <h2>Finance Dashboard</h2>
-        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">Logout</a>
+    <div class="text-center">
+        <h2 class="display-6 fw-bold mb-4">Finance Dashboard</h2>
+        <p class="lead">Manage student fees and keep track of financial records</p>
     </div>
-    <form method="POST" class="mt-4">
-        {{ form.hidden_tag() }}
-        <div class="mb-3">
-            {{ form.amount.label(class="form-label") }}
-            {{ form.amount(class="form-control", placeholder="Enter fee amount") }}
-            {% for error in form.amount.errors %}
-                <div class="text-danger">{{ error }}</div>
+    
+    <!-- Form to Add Fee -->
+    <div class="card shadow-sm mt-4 mb-5 p-4">
+        <h3 class="h4 text-primary">Add Fee for a Student</h3>
+        <form method="POST" class="mt-3">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.student_id.label(class="form-label") }}
+                {{ form.student_id(class="form-select") }}
+                {% for error in form.student_id.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.amount.label(class="form-label") }}
+                {{ form.amount(class="form-control", placeholder="Enter fee amount") }}
+                {% for error in form.amount.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.due_date.label(class="form-label") }}
+                {{ form.due_date(class="form-control", placeholder="YYYY-MM-DD") }}
+                {% for error in form.due_date.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Add Fee</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- List of Finance Users -->
+    <div class="card shadow-sm mt-4 mb-5 p-4">
+        <h3 class="h5 text-primary">Finance Users</h3>
+        <ul class="list-group list-group-flush">
+            {% for user in finance_users %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ user.username }} - <small>Staff No: {{ user.staff_number }}</small></span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- List of Students with Fees -->
+    <div class="card shadow-sm mt-4 p-4">
+        <h3 class="h5 text-primary">Student Fees</h3>
+        <div class="row">
+            {% for student in students_with_fees %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ student.user.username }}</h5>
+                            <p><strong>Admission Number:</strong> {{ student.admission_number }}</p>
+                            {% if student.fees %}
+                                <p><strong>Amount Due:</strong> KES {{ student.fees.amount_due | round(2) }}</p>
+                                <p><strong>Amount Paid:</strong> KES {{ student.fees.amount_paid | round(2) }}</p>
+                                <p><strong>Due Date:</strong> {{ student.fees.due_date.strftime('%Y-%m-%d') }}</p>
+                            {% else %}
+                                <p class="text-muted">No fee records available.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
         </div>
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Add Fee</button>
-        </div>
-    </form>
-    <h3 class="mt-4">All Finance Users</h3>
-    <ul class="list-group">
-        {% for finance in finances %}
-            <li class="list-group-item">{{ finance.name }} - Staff No: {{ finance.staff_number }}</li>
-        {% endfor %}
-    </ul>
+    </div>
 </div>
 {% endblock %}

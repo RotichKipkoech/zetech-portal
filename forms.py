@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, FloatField, PasswordField, SubmitField,SelectField
-from wtforms.validators import DataRequired, Length,Optional
+from wtforms import StringField, FloatField, PasswordField, SubmitField, SelectField, DateField
+from wtforms.validators import DataRequired, Length
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -22,7 +22,9 @@ class CreateFinanceForm(FlaskForm):
     submit = SubmitField('Create Finance User')
 
 class AddFeeForm(FlaskForm):
+    student_id = SelectField('Student', coerce=int, validators=[DataRequired()])
     amount = FloatField('Fee Amount', validators=[DataRequired()])
+    due_date = DateField('Due Date', format='%Y-%m-%d', default=None)  # Optional due date
     submit = SubmitField('Add Fee')
 
 class PostUnitForm(FlaskForm):
