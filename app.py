@@ -234,7 +234,6 @@ def add_fee(student_id):
         flash('Fee successfully added!', 'success')
         return redirect(url_for('finance_dashboard'))
     return render_template('add_fee.html', form=form)
-
 @app.route('/admin/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def edit_user(user_id):
@@ -243,17 +242,34 @@ def edit_user(user_id):
         return redirect(url_for('login'))
     
     user = User.query.get_or_404(user_id)
-    form = EditUserForm(obj=user)  # Assuming you have an EditUserForm set up for editing user details
+    student = Student.query.filter_by(user_id=user_id).first()
+    finance = Finance.query.filter_by(user_id=user_id).first()
 
-    if form.validate_on_submit():
-        # Update user details from the form data
-        user.username = form.username.data
-        user.role = form.role.data  # Update other fields as necessary
-        db.session.commit()
-        flash('User details updated successfully!', 'success')
-        return redirect(url_for('admin_dashboard'))
+    if request.method == 'POST':
+        # Update user details
+        user.username = request.form['username']
+        new_password = request.form['password']
+        
+        if new_password:
+            user.set_password(new_password)  # Assuming `set_password` handles hashing
 
-    return render_template('edit_user.html', form=form, user=user)
+        # Update student-specific details
+        if student:
+            student.admission_number = request.form['admission_number']
+        
+        # Update finance-specific details
+        if finance:
+            finance.staff_number = request.form['staff_number']
+
+        try:
+            db.session.commit()
+            flash('User updated successfully!', 'success')
+            return redirect(url_for('admin_dashboard'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error occurred while updating user: {str(e)}', 'danger')
+
+    return render_template('edit_user.html', user=user, student=student, finance=finance)
 
 
 @app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
