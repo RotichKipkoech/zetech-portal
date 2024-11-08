@@ -76,8 +76,16 @@ def admin_dashboard():
     if current_user.role != 'Admin':
         flash('Unauthorized access!', 'danger')
         return redirect(url_for('login'))
-    students = Student.query.all()
-    return render_template('admin_dashboard.html', students=students)
+    
+    # Query all students
+    students = db.session.query(Student, User).join(User, Student.user_id == User.id).all()
+
+   
+    # Query all finance users by joining User and Finance tables
+    finance_users = db.session.query(User, Finance).join(Finance).filter(User.role == 'Finance').all()
+
+    return render_template('admin_dashboard.html', students=students, finance_users=finance_users)
+
 
 @app.route('/student_dashboard')
 @login_required

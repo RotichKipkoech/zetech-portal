@@ -19,43 +19,43 @@
     <!-- Students list -->
     <h3 class="text-primary mt-4 mb-3">Student Information</h3>
     <div class="row">
-        {% for student in students %}
+        {% for student, user in students %}
             <div class="col-md-4 mb-4">
                 <div class="card border-light shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title text-dark">{{ student.name }}</h5>
                         <p class="card-text"><strong>Admission Number:</strong> {{ student.admission_number }}</p>
                         <p class="card-text"><strong>Role:</strong> Student</p>
-                        <p class="card-text"><strong>Username:</strong> {{ student.username }}</p>
-                        <!-- Additional student details can go here if needed -->
+                        <p class="card-text"><strong>Username:</strong> {{ user.username }}</p>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="{{ url_for('delete_user', user_id=student.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        <a href="{{ url_for('delete_user', user_id=user.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
+    
 
     <!-- Finance Users list -->
     <h3 class="text-primary mt-5 mb-3">Finance Users</h3>
-    <div class="row">
-        {% for finance_user in finance_users %}
-            <div class="col-md-4 mb-4">
-                <div class="card border-light shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title text-dark">{{ finance_user.name }}</h5>
-                        <p class="card-text"><strong>Staff Number:</strong> {{ finance_user.staff_number }}</p>
-                        <p class="card-text"><strong>Role:</strong> Finance</p>
-                        <p class="card-text"><strong>Username:</strong> {{ finance_user.username }}</p>
-                        <!-- Additional finance user details can go here if needed -->
-                    </div>
-                    <div class="card-footer text-end">
-                        <a href="{{ url_for('delete_user', user_id=finance_user.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
-                    </div>
+<div class="row">
+    {% for user, finance in finance_users %}
+        <div class="col-md-4 mb-4">
+            <div class="card border-light shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-dark">{{ user.username }}</h5>
+                    <p class="card-text"><strong>Staff Number:</strong> {{ finance.staff_number }}</p>
+                    <p class="card-text"><strong>Role:</strong> Finance</p>
+                    <p class="card-text"><strong>Username:</strong> {{ user.username }}</p>
+                    <!-- Additional finance user details can go here if needed -->
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{{ url_for('delete_user', user_id=user.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
                 </div>
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    {% endfor %}
+</div>
 </div>
 {% endblock %}
