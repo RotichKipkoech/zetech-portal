@@ -63,6 +63,8 @@ To set up and run the project locally, follow these steps:
 6. **Access the application**:
    - Open your web browser and go to [http://localhost:5000](http://localhost:5000).
 
+7. **LIVE LINK**:
+   - Open your web browser you can search for deployed link [https://zetech-portal.onrender.com](https://zetech-portal.onrender.com).
 ## Usage
 
 The application features distinct functionalities for each user role. Login credentials must be created by the Admin, as there is no public sign-up functionality.
