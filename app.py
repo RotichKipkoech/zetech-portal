@@ -35,6 +35,18 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    
+    # Determine the time-based greeting
+    current_hour = datetime.now().hour
+    if 5 <= current_hour < 12:
+        greeting = "Good Morning"
+    elif 12 <= current_hour < 17:
+        greeting = "Good Afternoon"
+    elif 17 <= current_hour < 21:
+        greeting = "Good Evening"
+    else:
+        greeting = "Good Night"
+    
     if form.validate_on_submit():
         # Check for Admin credentials
         if form.username.data == "Admin" and form.password.data == "Admin@123":
@@ -62,8 +74,7 @@ def login():
 
         flash('Invalid username or password', 'danger')
     
-    return render_template('login.html', form=form)
-
+    return render_template('login.html', form=form, greeting=greeting)
 @app.route('/logout')
 @login_required
 def logout():
