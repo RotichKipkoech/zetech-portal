@@ -1,6 +1,6 @@
-# School Management System
+# Zetech Portal
 
-A comprehensive web-based School Management System built with Flask. This system facilitates the management of academic, administrative, and financial information within a school environment. It supports multiple user roles, including Admin, Finance, and Student, each with tailored dashboards and functionalities.
+A comprehensive web-based Zetech Portal built with Flask. This system facilitates the management of academic, administrative, and financial information within a school environment. It supports multiple user roles, including Admin, Finance, and Student, each with tailored dashboards and functionalities.
 
 ## Table of Contents
 
@@ -16,7 +16,7 @@ A comprehensive web-based School Management System built with Flask. This system
 
 ## Getting Started
 
-Welcome to the School Management System! This application is designed to streamline the management of student records, financial accounts, and administrative operations. The system provides a dedicated dashboard for each user role, including Admin, Finance, and Student, to access the relevant information and actions.
+Welcome to the Zetech Portal! This application is designed to streamline the management of student records, financial accounts, and administrative operations. The system provides a dedicated dashboard for each user role, including Admin, Finance, and Student, to access the relevant information and actions.
 
 ## Technologies Used
 
@@ -34,8 +34,8 @@ To set up and run the project locally, follow these steps:
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/Rotichkipkoech/school-management-system.git
-    cd school-management-system
+    git clone https://github.com/RotichKipkoech/zetech-portal.git
+    cd zetech-portal
     ```
 
 2. **Create a virtual environment**:
@@ -64,7 +64,10 @@ To set up and run the project locally, follow these steps:
    - Open your web browser and go to [http://localhost:5000](http://localhost:5000).
 
 7. **LIVE LINK**:
-   - Open your web browser you can search for deployed link [https://zetech-portal.onrender.com](https://zetech-portal.onrender.com).
+   - Open your web browser you can search for deployed link [https://zetech-portal.onrender.com](https://zetech-portal.onrender.com).  
+   
+   N/B Admin logins are already setup in the Database Username  = Admin Password = Admin@123
+
 ## Usage
 
 The application features distinct functionalities for each user role. Login credentials must be created by the Admin, as there is no public sign-up functionality.
