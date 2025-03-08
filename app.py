@@ -12,7 +12,7 @@ app = Flask(__name__)
 # Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///zetech_university.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'your_secret_key'  # Change this to a secure key
+app.config['SECRET_KEY'] = 'your_secret_key'  
 
 # Initialize database and migration
 db.init_app(app)
@@ -40,9 +40,9 @@ def login():
     current_hour = datetime.now().hour
     if 5 <= current_hour < 12:
         greeting = "Good Morning"
-    elif 12 <= current_hour < 17:
+    elif 11 <= current_hour < 16:
         greeting = "Good Afternoon"
-    elif 17 <= current_hour < 21:
+    elif 16 <= current_hour < 21:
         greeting = "Good Evening"
     else:
         greeting = "Good Night"
